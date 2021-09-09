@@ -7,6 +7,8 @@ namespace PlayRemoteSoundServer
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            DictionaryTest.Test();
+            Console.WriteLine(FileActions.ConcatFilenameToPath("beans.mp3"));
         }
     }
 }
