@@ -11,11 +11,11 @@ namespace PlayRemoteSoundServer
     public class FileActions
     {
         private static readonly Regex sWhitespace = new Regex(@"\s+");
-        private static string settingsFileName = "settings.txt";
+        private const string settingsFileName = "settings.txt";
         private static string defaultSettings = "" +
-            "serverPort:5001" +
-            "serverAddress:http://localhost" +
-            "soundsFolder:";
+            "serverPort:5001\n" +
+            "serverAddress:http://localhost\n" +
+            "soundsFolder:\n";
 
         public static string ReplaceWhitespace(string input, string replacement)
         {
@@ -35,7 +35,7 @@ namespace PlayRemoteSoundServer
             return fileContents;
         }
 
-        public Dictionary<string, string> ParseSettingsFromFile(string filename, string path = "")
+        public static Dictionary<string, string> ParseSettingsFromFile(string filename = settingsFileName, string path = "")
         {
             filename = ConcatFilenameToPath(filename);
             Console.WriteLine("Ensure that the settings.txt are in this directory Then press any key to continue");
@@ -54,8 +54,11 @@ namespace PlayRemoteSoundServer
             foreach (string line in lines)
             {
                 tempString = ReplaceWhitespace(line, ""); 
-                tempArray = tempString.Split(":");
-                ReturnDict.Add(tempArray[0], tempArray[1]);
+                tempArray = tempString.Split(":", 2);
+                if (tempArray.Length >= 2)
+                {
+                    ReturnDict.Add(tempArray[0], tempArray[1]);
+                }
             }
             //Console log it 
             foreach (var entry in ReturnDict)
@@ -68,12 +71,19 @@ namespace PlayRemoteSoundServer
         }
         public static void GenerateSettingsFile()
         {
-            var path = GetBaseDirectory();
-            var fullSettingsFile = ConcatFilenameToPath(settingsFileName);
-            if (!File.Exists(fullSettingsFile))
+            var fullSettingsFilePath = ConcatFilenameToPath(settingsFileName);
+            var settings = defaultSettings.Split("\n");
+            if (!File.Exists(fullSettingsFilePath))
             {
-
+                using (StreamWriter writer = File.CreateText(fullSettingsFilePath))
+                {
+                    foreach (string line in settings)
+                    {
+                        writer.WriteLine(line);
+                    }
+                }
             }
+
 
         }
 

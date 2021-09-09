@@ -9,6 +9,8 @@ namespace PlayRemoteSoundServer
             Console.WriteLine("Hello World!");
             DictionaryTest.Test();
             Console.WriteLine(FileActions.ConcatFilenameToPath("beans.mp3"));
+            FileActions.GenerateSettingsFile();
+            FileActions.ParseSettingsFromFile();
         }
     }
 }

@@ -1,0 +1,4 @@
+serverPort:5001
+serverAddress:http://localhost
+soundsFolder:D:\Documents\Stream\sounds
+
