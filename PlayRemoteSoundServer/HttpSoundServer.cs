@@ -10,7 +10,7 @@ namespace PlayRemoteSoundServer
 {
     class HttpSoundServer
     {
-        public static void HandleSongRequest(string request, string SoundsPath)
+        public static bool HandleSongRequest(string request, string SoundsPath)
         {
             //parse request string
             string songName = SongFromReuestString(request);
@@ -18,7 +18,8 @@ namespace PlayRemoteSoundServer
             string songPath = FileActions.ConcatFilenameToPath(songName, SoundsPath);
             //play the sound
             Console.WriteLine($"Playing Song: {songPath}");
-            PlayLocalSound.PlayAll(songPath);
+            bool played = PlayLocalSound.PlayAll(songPath);
+            return played;
         }
         public static string SongFromReuestString(string request)
         {
@@ -58,10 +59,19 @@ namespace PlayRemoteSoundServer
             }
             Console.WriteLine(text);
             Console.WriteLine("Prepping Sound");
-            HandleSongRequest(text, )
+            bool played = HandleSongRequest(text, SoundsPath);
             HttpListenerResponse response = context.Response;
             // Construct a response.
-            string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
+            string responseString = "";
+            if (played)
+            {
+                responseString = $"<HTML><BODY> Played {text}</BODY></HTML>";
+
+            }
+            else
+            {
+                responseString = $"{text} COULD NOT BE PLAYED";
+            }
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
             // Get a response stream and write the response to it.
             response.ContentLength64 = buffer.Length;

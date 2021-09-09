@@ -1,6 +1,7 @@
 ﻿using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Media;
 using System.Text;
@@ -21,18 +22,30 @@ namespace PlayRemoteSoundServer
             player.Play();
             return true;
         }
-        public static void PlayAll(string filename)
+        public static bool PlayAll(string filename)
         {
-            using (var audioFile = new AudioFileReader(filename))
-            using (var outputDevice = new WaveOutEvent())
+            bool played;
+            try
             {
-                outputDevice.Init(audioFile);
-                outputDevice.Play();
-                while (outputDevice.PlaybackState == PlaybackState.Playing)
+                using (var audioFile = new AudioFileReader(filename))
+                using (var outputDevice = new WaveOutEvent())
                 {
-                    Thread.Sleep(1000);
+                    outputDevice.Init(audioFile);
+                    outputDevice.Play();
+                    while (outputDevice.PlaybackState == PlaybackState.Playing)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    played = true;
                 }
             }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine($"The file { filename } Does not exist");
+                played = false;
+
+            }
+            return played;
         }
     }
 
