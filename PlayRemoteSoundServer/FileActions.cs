@@ -21,10 +21,8 @@ namespace PlayRemoteSoundServer
         {
             return sWhitespace.Replace(input, replacement);
         }
-        public static string ConcatFilenameToPath(string filename)
+        public static string ConcatFilenameToPath(string filename, string path)
         {
-            string path = GetBaseDirectory();
-
             var finalPath = $"{path}\\{filename}";
             return finalPath;
         }

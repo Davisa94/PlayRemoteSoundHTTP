@@ -10,6 +10,25 @@ namespace PlayRemoteSoundServer
 {
     class HttpSoundServer
     {
+        public static void HandleSongRequest(string request, string SoundsPath)
+        {
+            //parse request string
+            string songName = SongFromReuestString(request);
+            //Concat sound to the path
+            string songPath = FileActions.ConcatFilenameToPath(songName, SoundsPath);
+            //play the sound
+            PlayLocalSound.PlayAll(songPath);
+        }
+        public static string SongFromReuestString(string request)
+        {
+            //strip any whitespace
+            request = FileActions.ReplaceWhitespace(request, "");
+            //split the request on the :
+            string[] temp = request.Split(":");
+            //return the second in the array
+            return temp[1];
+
+        }
         public static void StartServer(int port, string address)
         {
             
@@ -50,29 +69,49 @@ namespace PlayRemoteSoundServer
         }
         public static void CheckSupport()
         {
+            //If we arent supported Give info on why not
             if (!HttpListener.IsSupported)
             {
                 Console.WriteLine("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
                 return;
             }
         }
-        public static void SimpleListenerExample(string prefixes)
+        public static void VerifyPrefixes(string[] prefixes)
         {
-            
-            // URI prefixes are required,
             // for example "http://contoso.com:8080/index/".
             if (prefixes == null || prefixes.Length == 0)
                 throw new ArgumentException("prefixes");
+        }
+        
+        public static HttpListener AddPrefixes(HttpListener listener, string[] prefixes)
+        {
+            foreach(string prefix in prefixes)
+            {
+                listener.Prefixes.Add(prefix);
+            }
+            return listener;
+        }
+        public static void SimpleListenerExample(string[] prefixes, string SoundsPath)
+        {
+            //Check for support
+            CheckSupport();
+            // Verify URI prefixes
+            VerifyPrefixes(prefixes);
 
             // Create a listener.
             HttpListener listener = new HttpListener();
             // Add the prefixes.
-            listener.Prefixes.Add(prefixes);
+            listener = AddPrefixes(listener, prefixes);
+            //start the listener
             listener.Start();
             Console.WriteLine("Listening...");
-            // Note: The GetContext method blocks while waiting for a request.
-            HttpListenerContext context = AwaitRequest(listener);
-            HandleRequest(context);
+            //main loop
+            while (true)
+            {
+                // Note: The GetContext method blocks while waiting for a request.
+                HttpListenerContext context = AwaitRequest(listener);
+                HandleRequest(context);
+            }
             listener.Stop();
         }
 

@@ -14,7 +14,7 @@ namespace PlayRemoteSoundServer
             FileActions.GenerateSettingsFile();
             FileActions.ParseSettingsFromFile();*/
             Console.WriteLine("Starting Server ....");
-            string prefixes = "http://localhost" + ":5051/";
+            string [] prefixes = { "http://localhost" + ":5051/" };
             HttpSoundServer.SimpleListenerExample(prefixes);
         }
     }
