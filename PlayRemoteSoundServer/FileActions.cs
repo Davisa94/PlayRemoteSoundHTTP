@@ -33,9 +33,9 @@ namespace PlayRemoteSoundServer
             return fileContents;
         }
 
-        public static Dictionary<string, string> ParseSettingsFromFile(string filename = settingsFileName, string path = "")
+        public static Dictionary<string, string> ParseSettingsFromFile(string filename = settingsFileName)
         {
-            filename = ConcatFilenameToPath(filename);
+            filename = ConcatFilenameToPath(filename, GetBaseDirectory());
             Console.WriteLine("Ensure that the settings.txt are in this directory Then press any key to continue");
             Console.ReadLine();
             Dictionary<string, string> ReturnDict = new Dictionary<string, string>();
@@ -69,7 +69,7 @@ namespace PlayRemoteSoundServer
         }
         public static void GenerateSettingsFile()
         {
-            var fullSettingsFilePath = ConcatFilenameToPath(settingsFileName);
+            var fullSettingsFilePath = ConcatFilenameToPath(settingsFileName, GetBaseDirectory());
             var settings = defaultSettings.Split("\n");
             if (!File.Exists(fullSettingsFilePath))
             {

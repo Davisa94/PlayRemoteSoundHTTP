@@ -17,6 +17,7 @@ namespace PlayRemoteSoundServer
             //Concat sound to the path
             string songPath = FileActions.ConcatFilenameToPath(songName, SoundsPath);
             //play the sound
+            Console.WriteLine($"Playing Song: {songPath}");
             PlayLocalSound.PlayAll(songPath);
         }
         public static string SongFromReuestString(string request)
@@ -44,7 +45,7 @@ namespace PlayRemoteSoundServer
             Console.WriteLine("Got Request");
             return context;
         }
-        public static void HandleRequest(HttpListenerContext context)
+        public static void HandleRequest(HttpListenerContext context, string SoundsPath)
         {
             Console.WriteLine("Handling Request");
             HttpListenerRequest request = context.Request;
@@ -56,6 +57,8 @@ namespace PlayRemoteSoundServer
                 text = reader.ReadToEnd();
             }
             Console.WriteLine(text);
+            Console.WriteLine("Prepping Sound");
+            HandleSongRequest(text, )
             HttpListenerResponse response = context.Response;
             // Construct a response.
             string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
@@ -110,7 +113,7 @@ namespace PlayRemoteSoundServer
             {
                 // Note: The GetContext method blocks while waiting for a request.
                 HttpListenerContext context = AwaitRequest(listener);
-                HandleRequest(context);
+                HandleRequest(context, SoundsPath);
             }
             listener.Stop();
         }
