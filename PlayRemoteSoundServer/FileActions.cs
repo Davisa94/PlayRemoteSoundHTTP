@@ -19,6 +19,14 @@ namespace PlayRemoteSoundServer
             string fileContents = System.IO.File.ReadAllText(fileName);
             return fileContents;
         }
+        public string[] GetSettingsFromFile(string filename, string path = "")
+        {
+            return null;
+        }
+        public static string[] GetFileContents()
+        {
+            return null;
+        }
         public void EditFile(string filename, string message)
         {
             // what line in the html do we write the action to
